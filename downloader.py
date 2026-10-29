@@ -1,11 +1,11 @@
 import os
 import yt_dlp
-import getraw
 
 class YouTubeDownloader:
     
     def __init__(self, default_path: str = None):
         self.default_path = default_path or os.getcwd()
+        self.current_format = 'mp4'
 
     def download_video(self, url: str, save_path: str = None) -> str:
         target_path = save_path.strip() if save_path else self.default_path
@@ -15,7 +15,8 @@ class YouTubeDownloader:
         
         ydl_opts = {
             'format': 'bestvideo+bestaudio/best',
-            'outtmpl': os.path.join(target_path, '%(title)s.%(ext)s'),
+            'outtmpl': os.path.join(target_path, f'%(title)s.{self.current_format}'),
+            'merge_output_format': self.current_format,
             'js_runtimes': {
                 'deno': {}, 
                 'node': {}
@@ -32,11 +33,5 @@ class YouTubeDownloader:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
             
-        try:
-            json_log_path = os.path.join(target_path, "os_raw_data.json")
-            getraw.save_raw_os_data(json_log_path)
-        except Exception as json_error:
-            print(f"[Ошибка записи JSON]: {json_error}")
-                
-        return target_path
 
+        return target_path
