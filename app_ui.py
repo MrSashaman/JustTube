@@ -3,7 +3,7 @@ import threading
 import customtkinter as ctk
 from downloader import YouTubeDownloader  
 from tkinter import messagebox
-
+import i
 
 class JustTubeApp(ctk.CTk):
     
@@ -53,7 +53,7 @@ class JustTubeApp(ctk.CTk):
         self.title_label = ctk.CTkLabel(self, text="JustTube Загрузчик", font=ctk.CTkFont(family="Arial", size=24, weight="bold"))
         self.title_label.pack(pady=(30, 20))
 
-        self.version_label = ctk.CTkLabel(self, text="Версия 1.0", font=ctk.CTkFont(size=12))
+        self.version_label = ctk.CTkLabel(self, text=f'Версия: {i.version}', font=ctk.CTkFont(size=12))
         self.version_label.pack(pady=(0, 20))
 
         self.url_label = ctk.CTkLabel(self, text="Ссылка на YouTube видео:", font=ctk.CTkFont(size=13))
@@ -125,7 +125,7 @@ class JustTubeApp(ctk.CTk):
         
         info_label = ctk.CTkLabel(
             about_window, 
-            text="JustTube Downloader v1.0\n\nРазработчик: mrsashaman\nGitHub: https://github.com/mrsashaman/JustTube",
+            text=f"JustTube Downloader {i.version}\n\nРазработчик: {i.author}\nGitHub: https://github.com/mrsashaman/JustTube",
             font=ctk.CTkFont(size=13),
             justify="center"
         )
@@ -138,7 +138,7 @@ class JustTubeApp(ctk.CTk):
     def settings_widget(self):
         settings_window = ctk.CTkToplevel(self)
         settings_window.title("Настройки")
-        settings_window.geometry("450x350")  
+        settings_window.geometry("520x350")  
         settings_window.resizable(False, False)
         
         settings_window.transient(self)
@@ -160,7 +160,7 @@ class JustTubeApp(ctk.CTk):
         hr_line = ctk.CTkFrame(settings_window, height=2, fg_color="gray30")
         hr_line.pack(fill="x", padx=20, pady=20)
 
-        select_file_format_label = ctk.CTkLabel(settings_window, text="Выберите формат видеофайла:", font=ctk.CTkFont(size=14, weight="bold"))
+        select_file_format_label = ctk.CTkLabel(settings_window, text="Выберите формат выходного файла (Видео / Аудио):", font=ctk.CTkFont(size=14, weight="bold"))
         select_file_format_label.pack(pady=(0, 5))
         
         self.current_format_label = ctk.CTkLabel(
@@ -174,14 +174,18 @@ class JustTubeApp(ctk.CTk):
         formats_frame = ctk.CTkFrame(settings_window, fg_color="transparent")
         formats_frame.pack(pady=5)
 
-        list_of_formats = ['mp4', 'webm', 'mkv', 'avi']
+        list_of_formats = ['mp4', 'webm', 'mkv', 'avi', 'mp3', 'wav']
         for fmt in list_of_formats:
+            is_audio = fmt in ['mp3', 'wav']
+            
             format_button = ctk.CTkButton(
                 formats_frame, 
                 text=fmt.upper(), 
                 font=ctk.CTkFont(size=11, weight="bold"), 
                 width=75, 
                 height=30,
+                fg_color="#2c5c2e" if is_audio else None, 
+                hover_color="#1e3d1f" if is_audio else None,
                 command=lambda f=fmt: self._set_default_format(f)
             )
-            format_button.pack(side="left", padx=5)
+            format_button.pack(side="left", padx=4)
